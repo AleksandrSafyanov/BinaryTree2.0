@@ -10,7 +10,7 @@ namespace BTree
   {
     int LastLvl;
     int FixLvl;
-    int Count { get; set; }
+    int Count;
     List<int[]> tree = new List<int[]>();
     static int countTempStor = 15;
     int[] tempStor = new int[countTempStor];
