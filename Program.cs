@@ -597,7 +597,7 @@ namespace BTree
       BTree treeB = new BTree();
       BTree treeA_NoRandom = new BTree();
       BTree treeB_NoRandom = new BTree();
-      int countInArray = 7;
+      int countInArray = 8;
       int[] array = new int[countInArray];
 
       Console.WriteLine("──────────────────────────────");
