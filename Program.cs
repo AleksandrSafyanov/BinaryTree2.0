@@ -12,7 +12,7 @@ namespace BTree
     int FixLvl;
     int Count;
     List<int[]> tree = new List<int[]>();
-    static int countTempStor = 15;
+    static int countTempStor = 20;
     int[] tempStor = new int[countTempStor];
     int position;
     int countInsertAsRoot;
@@ -207,63 +207,71 @@ namespace BTree
 
     void AddInArray(int elem, int lvl, List<int[]> leaf)
     {
+      int leftChild = ((elem + 1) * 2) - 2;
+      int rightChild = ((elem + 1) * 2) - 1;
+      int level = lvl + 1;
+
       if (leaf[lvl][elem] == 0)
         return;
 
       if (lvl + 1 == LastLvl)
       {
-        if (leaf[lvl + 1][((elem + 1) * 2) - 2] != 0 && leaf[lvl + 1][((elem + 1) * 2) - 2] != -1)
+        if (leaf[level][leftChild] != 0 && leaf[level][leftChild] != -1)
         {
-          tempStor[position] = leaf[lvl + 1][((elem + 1) * 2) - 2];
+          tempStor[position] = leaf[level][leftChild];
           position++;
         }
 
-        if (leaf[lvl + 1][((elem + 1) * 2) - 1] != 0 && leaf[lvl + 1][((elem + 1) * 2) - 1] != -1)
+        if (leaf[level][rightChild] != 0 && leaf[level][rightChild] != -1)
         {
-          tempStor[position] = leaf[lvl + 1][((elem + 1) * 2) - 1];
+          tempStor[position] = leaf[level][rightChild];
           position++;
         }
 
       }
       else
       {
-        if (leaf[lvl + 1][((elem + 1) * 2) - 2] != 0 && leaf[lvl + 1][((elem + 1) * 2) - 2] != -1)
+        if (leaf[level][leftChild] != 0 && leaf[level][leftChild] != -1)
         {
-          tempStor[position] = leaf[lvl + 1][((elem + 1) * 2) - 2];
+          tempStor[position] = leaf[level][leftChild];
           position++;
-          AddInArray(((elem + 1) * 2) - 2, lvl + 1, leaf);
+          AddInArray(leftChild, level, leaf);
         }
-        if (leaf[lvl + 1][((elem + 1) * 2) - 1] != 0 && leaf[lvl + 1][((elem + 1) * 2) - 1] != -1)
+        if (leaf[level][rightChild] != 0 && leaf[level][rightChild] != -1)
         {
-          tempStor[position] = leaf[lvl + 1][((elem + 1) * 2) - 1];
+          tempStor[position] = leaf[level][rightChild];
           position++;
-          AddInArray(((elem + 1) * 2) - 1, lvl + 1, leaf);
+          AddInArray(rightChild, level, leaf);
         }
       }
     }
     void TempDeleteTree(int elem, int lvl, List<int[]> leaf)
     {
+      int leftChild = ((elem + 1) * 2) - 2;
+      int rightChild = ((elem + 1) * 2) - 1;
+      int level = lvl + 1;
+
       if (leaf[lvl][elem] == 0)
         return;
 
       if (lvl + 1 == LastLvl)
       {
-        if (leaf[lvl + 1][((elem + 1) * 2) - 2] != 0)
-          leaf[lvl + 1][((elem + 1) * 2) - 2] = 0;
-        if (leaf[lvl + 1][((elem + 1) * 2) - 1] != 0)
-          leaf[lvl + 1][((elem + 1) * 2) - 1] = 0;
+        if (leaf[level][leftChild] != 0)
+          leaf[level][leftChild] = 0;
+        if (leaf[level][rightChild] != 0)
+          leaf[level][rightChild] = 0;
       }
       else
       {
-        if (leaf[lvl + 1][((elem + 1) * 2) - 2] != 0)
+        if (leaf[level][leftChild] != 0)
         {
-          TempDeleteTree(((elem + 1) * 2) - 2, lvl + 1, leaf);
-          leaf[lvl + 1][((elem + 1) * 2) - 2] = 0;
+          TempDeleteTree(leftChild, level, leaf);
+          leaf[level][leftChild] = 0;
         }
-        if (leaf[lvl + 1][((elem + 1) * 2) - 1] != 0)
+        if (leaf[level][rightChild] != 0)
         {
-          TempDeleteTree(((elem + 1) * 2) - 1, lvl + 1, leaf);
-          leaf[lvl + 1][((elem + 1) * 2) - 1] = 0;
+          TempDeleteTree(rightChild, level, leaf);
+          leaf[level][rightChild] = 0;
         }
       }
     }
@@ -287,16 +295,21 @@ namespace BTree
 
     void GetTree(int elem, int lvl, List<int[]> leafB, BTree leafA)
     {
+      int leftChild = ((elem + 1) * 2) - 2;
+      int rightChild = ((elem + 1) * 2) - 1;
+      int level = lvl + 1;
+
       leafA.Insert(leafB[lvl][elem]);
+
       if (lvl != LastLvl)
       {
-        if (leafB[lvl + 1][((elem + 1) * 2) - 2] != 0 && leafB[lvl + 1][((elem + 1) * 2) - 2] != -1)
+        if (leafB[level][leftChild] != 0 && leafB[level][leftChild] != -1)
         {
-          GetTree(((elem + 1) * 2) - 2, lvl + 1, leafB, leafA);
+          GetTree(leftChild, level, leafB, leafA);
         }
-        if (leafB[lvl + 1][((elem + 1) * 2) - 1] != 0 && leafB[lvl + 1][((elem + 1) * 2) - 1] != -1)
+        if (leafB[level][rightChild] != 0 && leafB[level][rightChild] != -1)
         {
-          GetTree(((elem + 1) * 2) - 1, lvl + 1, leafB, leafA);
+          GetTree(rightChild, level, leafB, leafA);
         }
       }
     }
@@ -308,6 +321,10 @@ namespace BTree
     }
     void FixTree(int elem, int lvl, List<int[]> leaf)
     {
+      int leftChild = ((elem + 1) * 2) - 2;
+      int rightChild = ((elem + 1) * 2) - 1;
+      int level = lvl + 1;
+
       if (FixLvl == lvl)
         FixLvl++;
 
@@ -316,35 +333,29 @@ namespace BTree
 
       if (lvl + 1 == LastLvl)
       {
-        if ((leaf[lvl + 1][((elem + 1) * 2) - 2] == 0 || leaf[lvl + 1][((elem + 1) * 2) - 2] == -1) && (leaf[lvl + 1][((elem + 1) * 2) - 1] == 0 || leaf[lvl + 1][((elem + 1) * 2) - 1] == -1))
+        if ((leaf[level][leftChild] == 0 || leaf[level][leftChild] == -1) && (leaf[level][rightChild] == 0 || leaf[level][rightChild] == -1))
         {
-          leaf[lvl + 1][((elem + 1) * 2) - 2] = 0;
-          leaf[lvl + 1][((elem + 1) * 2) - 1] = 0;
-        }
-
-        if ((leaf[lvl + 1][((elem + 1) * 2) - 2] == 0 || leaf[lvl + 1][((elem + 1) * 2) - 2] == -1) && (leaf[lvl + 1][((elem + 1) * 2) - 1] == 0 || leaf[lvl + 1][((elem + 1) * 2) - 1] == -1))
-        {
-          leaf[lvl + 1][((elem + 1) * 2) - 2] = 0;
-          leaf[lvl + 1][((elem + 1) * 2) - 1] = 0;
+          leaf[level][leftChild] = 0;
+          leaf[level][rightChild] = 0;
         }
       }
       else
       {
-        if ((leaf[lvl + 1][((elem + 1) * 2) - 2] == 0 || leaf[lvl + 1][((elem + 1) * 2) - 2] == -1) && (leaf[lvl + 1][((elem + 1) * 2) - 1] == 0 || leaf[lvl + 1][((elem + 1) * 2) - 1] == -1))
+        if ((leaf[level][leftChild] == 0 || leaf[level][leftChild] == -1) && (leaf[level][rightChild] == 0 || leaf[level][rightChild] == -1))
         {
-          leaf[lvl + 1][((elem + 1) * 2) - 2] = 0;
-          leaf[lvl + 1][((elem + 1) * 2) - 1] = 0;
+          leaf[level][leftChild] = 0;
+          leaf[level][rightChild] = 0;
         }
         else
         {
-          if (leaf[lvl + 1][((elem + 1) * 2) - 2] != 0 && leaf[lvl + 1][((elem + 1) * 2) - 2] != -1)
+          if (leaf[level][leftChild] != 0 && leaf[level][leftChild] != -1)
           {
-            FixTree(((elem + 1) * 2) - 2, lvl + 1, leaf);
+            FixTree(leftChild, level, leaf);
           }
 
-          if (leaf[lvl + 1][((elem + 1) * 2) - 1] != 0 && leaf[lvl + 1][((elem + 1) * 2) - 1] != -1)
+          if (leaf[level][rightChild] != 0 && leaf[level][rightChild] != -1)
           {
-            FixTree(((elem + 1) * 2) - 1, lvl + 1, leaf);
+            FixTree(rightChild, level, leaf);
           }
         }
       }
@@ -519,20 +530,24 @@ namespace BTree
     }
     void PrintTreeSim(int elem, int lvl, List<int[]> leaf)
     {
+      int leftChild = ((elem + 1) * 2) - 2;
+      int rightChild = ((elem + 1) * 2) - 1;
+      int level = lvl + 1;
+
       if (lvl != LastLvl)
       {
-        if (leaf[lvl + 1][((elem + 1) * 2) - 2] != 0 && leaf[lvl + 1][((elem + 1) * 2) - 2] != -1)
+        if (leaf[level][leftChild] != 0 && leaf[level][leftChild] != -1)
         {
-          PrintTreeSim(((elem + 1) * 2) - 2, lvl + 1, leaf);
+          PrintTreeSim(leftChild, level, leaf);
         }
       }
       Console.Write(leaf[lvl][elem]); Console.Write(" ");
 
       if (lvl != LastLvl)
       {
-        if (leaf[lvl + 1][((elem + 1) * 2) - 1] != 0 && leaf[lvl + 1][((elem + 1) * 2) - 1] != -1)
+        if (leaf[level][rightChild] != 0 && leaf[level][rightChild] != -1)
         {
-          PrintTreeSim(((elem + 1) * 2) - 1, lvl + 1, leaf);
+          PrintTreeSim(rightChild, level, leaf);
         }
       }
     }
@@ -548,15 +563,19 @@ namespace BTree
     }
     void PrintTreeRev(int elem, int lvl, List<int[]> leaf)
     {
+      int leftChild = ((elem + 1) * 2) - 2;
+      int rightChild = ((elem + 1) * 2) - 1;
+      int level = lvl + 1;
+
       if ((lvl) != LastLvl)
       {
-        if (leaf[lvl + 1][((elem + 1) * 2) - 2] != 0 && leaf[lvl + 1][((elem + 1) * 2) - 2] != -1)
+        if (leaf[level][leftChild] != 0 && leaf[level][leftChild] != -1)
         {
-          PrintTreeRev(((elem + 1) * 2) - 2, lvl + 1, leaf);
+          PrintTreeRev(leftChild, level, leaf);
         }
-        if (leaf[(lvl + 1)][((elem + 1) * 2) - 1] != 0 && leaf[lvl + 1][((elem + 1) * 2) - 1] != -1)
+        if (leaf[level][rightChild] != 0 && leaf[level][rightChild] != -1)
         {
-          PrintTreeRev(((elem + 1) * 2) - 1, lvl + 1, leaf);
+          PrintTreeRev(rightChild, level, leaf);
         }
       }
       Console.Write(leaf[lvl][elem]); Console.Write(" ");
@@ -573,16 +592,20 @@ namespace BTree
     }
     void PrintTreeStr(int elem, int lvl, List<int[]> leaf)
     {
+      int leftChild = ((elem + 1) * 2) - 2;
+      int rightChild = ((elem + 1) * 2) - 1;
+      int level = lvl + 1;
+
       Console.Write(leaf[lvl][elem]); Console.Write(" ");
       if ((lvl) != LastLvl)
       {
-        if (leaf[(lvl + 1)][(((elem + 1) * 2) - 2)] != 0 && leaf[lvl + 1][((elem + 1) * 2) - 2] != -1)
+        if (leaf[level][leftChild] != 0 && leaf[level][leftChild] != -1)
         {
-          PrintTreeStr((((elem + 1) * 2) - 2), (lvl + 1), leaf);
+          PrintTreeStr(leftChild, level, leaf);
         }
-        if (leaf[(lvl + 1)][(((elem + 1) * 2) - 1)] != 0 && leaf[lvl + 1][((elem + 1) * 2) - 1] != -1)
+        if (leaf[level][rightChild] != 0 && leaf[level][rightChild] != -1)
         {
-          PrintTreeStr((((elem + 1) * 2) - 1), (lvl + 1), leaf);
+          PrintTreeStr(rightChild, level, leaf);
         }
       }
     }
@@ -597,7 +620,7 @@ namespace BTree
       BTree treeB = new BTree();
       BTree treeA_NoRandom = new BTree();
       BTree treeB_NoRandom = new BTree();
-      int countInArray = 8;
+      int countInArray = 7;
       int[] array = new int[countInArray];
 
       Console.WriteLine("──────────────────────────────");
